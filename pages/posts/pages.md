@@ -56,11 +56,7 @@ In Next.js, you can statically generate pages **with or without data**. Let's ta
 By default, Next.js pre-renders pages using Static Generation without fetching data. Here's an example:
 
 ```js
-function About() {
-  return <div>About</div>
-}
 
-export default About
 ```
 
 Note that this page does not need to fetch any external data to be pre-rendered. In cases like this, Next.js generates a single HTML file per page during build time.
@@ -79,43 +75,15 @@ Some pages require fetching external data for pre-rendering. There are two scena
 ```js
 // TODO: Need to fetch `posts` (by calling some API endpoint)
 //       before this page can be pre-rendered.
-function Blog({ posts }) {
-  return (
-    <ul>
-      {posts.map((post) => (
-        <li>{post.title}</li>
-      ))}
-    </ul>
-  )
-}
 
-export default Blog
+
 ```
 
 To fetch this data on pre-render, Next.js allows you to `export` an `async` function called `getStaticProps` from the same file. This function gets called at build time and lets you pass fetched data to the page's `props` on pre-render.
 
 ```js
-function Blog({ posts }) {
-  // Render posts...
-}
 
-// This function gets called at build time
-export async function getStaticProps() {
-  // Call an external API endpoint to get posts
-  const res = await fetch('https://.../posts')
-  const posts = await res.json()
 
-  // By returning { props: { posts } }, the Blog component
-  // will receive `posts` as a prop at build time
-  return {
-    props: {
-      posts
-    }
-  }
-}
-
-export default Blog
-```
 
 To learn more about how `getStaticProps` works, check out the [Data Fetching documentation](/docs/basic-features/data-fetching.md#getstaticprops-static-generation).
 
@@ -153,28 +121,7 @@ export async function getStaticPaths() {
 
 Also in `pages/posts/[id].js`, you need to export `getStaticProps` so that you can fetch the data about the post with this `id` and use it to pre-render the page:
 
-```js
-function Post({ post }) {
-  // Render post...
-}
 
-export async function getStaticPaths() {
-  // ...
-}
-
-// This also gets called at build time
-export async function getStaticProps({ params }) {
-  // params contains the post `id`.
-  // If the route is like /posts/1, then params.id is 1
-  const res = await fetch(`https://.../posts/${params.id}`)
-  const post = await res.json()
-
-  // Pass post data to the page via props
-  return { props: { post } }
-}
-
-export default Post
-```
 
 To learn more about how `getStaticPaths` works, check out the [Data Fetching documentation](/docs/basic-features/data-fetching.md#getstaticpaths-static-generation).
 
